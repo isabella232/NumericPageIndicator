@@ -1,0 +1,30 @@
+apply plugin: 'android'
+
+repositories {
+    maven { url "http://dl.bintray.com/populov/maven" }
+    mavenCentral()
+}
+
+dependencies {
+    compile 'com.android.support:support-v4:+'
+    compile 'com.viewpagerindicator:library:2.4.1@aar'
+    compile 'com.actionbarsherlock:actionbarsherlock:4.4.0@aar'
+    compile project(':library')
+}
+
+android {
+    compileSdkVersion 8
+    buildToolsVersion "19.0.3"
+
+    sourceSets {
+        main {
+            manifest.srcFile 'AndroidManifest.xml'
+            java.srcDirs = ['src']
+            resources.srcDirs = ['src']
+            aidl.srcDirs = ['src']
+            renderscript.srcDirs = ['src']
+            res.srcDirs = ['res']
+            assets.srcDirs = ['assets']
+        }
+    }
+}

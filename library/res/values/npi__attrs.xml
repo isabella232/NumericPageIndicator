@@ -56,6 +56,17 @@
         <attr name="showChangePageButtons" format="boolean" />
         <!-- Whether to show the "next" and "previous" buttons -->
         <attr name="showStartEndButtons" format="boolean" />
-        </declare-styleable>
+        <!-- Show images for page controls -->
+        <attr name="showImagesForPageControls" format="boolean" />
+        <!-- Image for the "Start" (or "First page") button. -->
+        <attr name="startButtonImage" format="reference" />
+        <!-- Image for the "End" (or "Last Page") button. -->
+        <attr name="endButtonImage" format="reference" />
+        <!-- Image for the "Previous" button. -->
+        <attr name="previousButtonImage" format="reference" />
+        <!-- Image for the "Next" button. -->
+        <attr name="nextButtonImage" format="reference" />
+
+    </declare-styleable>
 
 </resources>

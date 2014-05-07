@@ -18,11 +18,13 @@ package com.manuelpeinado.numericpageindicator;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -89,6 +91,11 @@ public class NumericPageIndicator extends View implements PageIndicator {
     private String mTextNextButton;
     private String mTextStartButton;
     private String mTextEndButton;
+    private boolean mShowImagesForPageControls;
+    private Bitmap mStartButtonImage;
+    private Bitmap mEndButtonImage;
+    private Bitmap mPreviousButtonImage;
+    private Bitmap mNextButtonImage;
     private static final String TEMPLATE_PAGE_NUMBER_PLACEHOLDER = "#i";
     private static final String TEMPLATE_PAGE_COUNT_PLACEHOLDER = "#N";
 
@@ -118,6 +125,7 @@ public class NumericPageIndicator extends View implements PageIndicator {
         final float defaultTextSize = res.getDimension(R.dimen.default_page_number_indicator_text_size);
         final boolean defaultShowChangePageButtons = res.getBoolean(R.bool.default_page_number_indicator_show_change_page_buttons);
         final boolean defaultShowStartEndButtons = res.getBoolean(R.bool.default_page_number_indicator_show_start_end_buttons);
+        final boolean defaultShowImagesForPageControls = res.getBoolean(R.bool.default_page_number_indicator_show_images_for_page_controls);
         
         // Retrieve styles attributes
         final TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.NumericPageIndicator, defStyle, 0);
@@ -146,6 +154,12 @@ public class NumericPageIndicator extends View implements PageIndicator {
             mTextNextButton = res.getString(R.string.default_page_number_indicator_next_button_text);
         }
 
+        // these will be null if they are unused
+        mStartButtonImage = getBitmapFromDrawable(a.getDrawable(R.styleable.NumericPageIndicator_startButtonImage));
+        mEndButtonImage = getBitmapFromDrawable(a.getDrawable(R.styleable.NumericPageIndicator_endButtonImage));
+        mPreviousButtonImage = getBitmapFromDrawable(a.getDrawable(R.styleable.NumericPageIndicator_previousButtonImage));
+        mNextButtonImage = getBitmapFromDrawable(a.getDrawable(R.styleable.NumericPageIndicator_nextButtonImage));
+
         mColorText = a.getColor(R.styleable.NumericPageIndicator_android_textColor, defaultTextColor);
         mColorPageNumberText = a.getColor(R.styleable.NumericPageIndicator_pageNumberTextColor, defaultPageNumberTextColor);
         mPageNumberTextBold = a.getBoolean(R.styleable.NumericPageIndicator_pageNumberTextBold, defaultPageNumberTextBold);
@@ -155,6 +169,7 @@ public class NumericPageIndicator extends View implements PageIndicator {
         mPaintText.setColor(mColorText);
         mShowChangePageButtons = a.getBoolean(R.styleable.NumericPageIndicator_showChangePageButtons, defaultShowChangePageButtons);
         mShowStartEndButtons = a.getBoolean(R.styleable.NumericPageIndicator_showStartEndButtons, defaultShowStartEndButtons);
+        mShowImagesForPageControls = a.getBoolean(R.styleable.NumericPageIndicator_showImagesForPageControls, defaultShowImagesForPageControls);
         
         mPaintButtonBackground.setColor(mColorPressedButton);
         final float textSize = a.getDimension(R.styleable.NumericPageIndicator_android_textSize, defaultTextSize);
@@ -174,6 +189,13 @@ public class NumericPageIndicator extends View implements PageIndicator {
         }
 
         a.recycle();
+    }
+
+    public Bitmap getBitmapFromDrawable(Drawable drawable) {
+        if (drawable instanceof BitmapDrawable) {
+            return ((BitmapDrawable) drawable).getBitmap();
+        }
+        return null;
     }
 
     /**
@@ -484,13 +506,23 @@ public class NumericPageIndicator extends View implements PageIndicator {
             if (mCurrentPage == 0) {
                 mPaintText.setAlpha((int) (nextPageWeight * textStartAlpha + currentPageWeight * textEndAlpha));
             }
-            canvas.drawText(mTextStartButton, mRectStart.centerX() - mWidthStartText / 2, mRectStartText.bottom, mPaintText);
+            if (!mShowImagesForPageControls) {
+                canvas.drawText(mTextStartButton, mRectStart.centerX() - mWidthStartText / 2, mRectStartText.bottom, mPaintText);
+            } else if (mStartButtonImage != null) {
+                canvas.drawBitmap(mStartButtonImage, mRectStart.centerX() - mStartButtonImage.getWidth() / 2,
+                        mRectStart.centerY() - mStartButtonImage.getHeight() / 2, mPaintText);
+            }
             mPaintText.setAlpha(Color.alpha(mColorText));
             if (mCurrentPage < count - 1) {
                 if (mCurrentPage == count - 2) {
                     mPaintText.setAlpha((int) (currentPageWeight * textStartAlpha + nextPageWeight * textEndAlpha));
                 }
-                canvas.drawText(mTextEndButton, mRectEnd.centerX() - mWidthEndText / 2, mRectEndText.bottom, mPaintText);
+                if (!mShowImagesForPageControls) {
+                    canvas.drawText(mTextEndButton, mRectEnd.centerX() - mWidthEndText / 2, mRectEndText.bottom, mPaintText);
+                } else if (mEndButtonImage != null) {
+                    canvas.drawBitmap(mEndButtonImage, mRectEnd.centerX() - mEndButtonImage.getWidth() / 2,
+                            mRectEnd.centerY() - mEndButtonImage.getHeight() / 2, mPaintText);
+                }
                 mPaintText.setAlpha(Color.alpha(mColorText));
             }
         }
@@ -509,13 +541,23 @@ public class NumericPageIndicator extends View implements PageIndicator {
             if (mCurrentPage == 0) {
                 mPaintText.setAlpha((int) (nextPageWeight * textStartAlpha + currentPageWeight * textEndAlpha));
             }
-            canvas.drawText(mTextPreviousButton, mRectPrevious.centerX() - mWidthPreviousText / 2, mRectPreviousText.bottom, mPaintText);
+            if (!mShowImagesForPageControls) {
+                canvas.drawText(mTextPreviousButton, mRectPrevious.centerX() - mWidthPreviousText / 2, mRectPreviousText.bottom, mPaintText);
+            } else if (mPreviousButtonImage != null) {
+                canvas.drawBitmap(mPreviousButtonImage, mRectPrevious.centerX() - mPreviousButtonImage.getWidth() / 2,
+                        mRectPrevious.centerY() - mPreviousButtonImage.getHeight() / 2, mPaintText);
+            }
             mPaintText.setAlpha(Color.alpha(mColorText));
             if (mCurrentPage < count - 1) {
                 if (mCurrentPage == count - 2) {
                     mPaintText.setAlpha((int) (currentPageWeight * textStartAlpha + nextPageWeight * textEndAlpha));
                 }
-                canvas.drawText(mTextNextButton, mRectNext.centerX() - mWidthNextText / 2, mRectNextText.bottom, mPaintText);
+                if (!mShowImagesForPageControls) {
+                    canvas.drawText(mTextNextButton, mRectNext.centerX() - mWidthNextText / 2, mRectNextText.bottom, mPaintText);
+                } else if (mNextButtonImage != null) {
+                    canvas.drawBitmap(mNextButtonImage, mRectNext.centerX() - mNextButtonImage.getWidth() / 2,
+                            mRectNext.centerY() - mNextButtonImage.getHeight() / 2, mPaintText);
+                }
                 mPaintText.setAlpha(Color.alpha(mColorText));
             }
         }

@@ -6,7 +6,7 @@ repositories {
 
 dependencies {
     compile 'com.android.support:support-v4:+'
-    provided 'com.viewpagerindicator:library:2.4.1@aar'
+    provided 'com.viewpagerindicator:library:2.4.2'
 }
 
 android {

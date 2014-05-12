@@ -1,12 +1,12 @@
 apply plugin: 'android-library'
 
 repositories {
-    maven { url "https://github.com/twotoasters/android-viewpagerindicator/raw/mvnrepo" }
+    maven { url "http://dl.bintray.com/populov/maven" }
 }
 
 dependencies {
     compile 'com.android.support:support-v4:+'
-    provided 'com.viewpagerindicator:library:2.4.2'
+    provided 'com.viewpagerindicator:library:2.4.1@aar'
 }
 
 android {

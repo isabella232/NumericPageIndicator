@@ -661,10 +661,20 @@ public class NumericPageIndicator extends View implements PageIndicator {
         float leftOffset = 0;
         float rightOffset = 0;
         if (mShowStartEndButtons) {
-            mWidthStartText = mPaintText.measureText(mTextStartButton);
-            final float startButtonWidth = mWidthStartText + 2 * horizontalPadding;
-            mWidthEndText = mPaintText.measureText(mTextEndButton);
-            final float endButtonWidth = mWidthEndText + 2 * horizontalPadding;
+            float startButtonWidth;
+            float endButtonWidth;
+            if (mShowImagesForPageControls) {
+                startButtonWidth = mStartButtonImage.getWidth();
+                endButtonWidth = mEndButtonImage.getWidth();
+            } else {
+                mWidthStartText = mPaintText.measureText(mTextStartButton);
+                startButtonWidth = mWidthStartText;
+                mWidthEndText = mPaintText.measureText(mTextEndButton);
+                endButtonWidth = mWidthEndText;
+            }
+            startButtonWidth += (2 * horizontalPadding);
+            endButtonWidth += (2 * horizontalPadding);
+
             mRectStartText.set((int) horizontalPadding, (int) mPaddingTop, (int) startButtonWidth, (int) mTextBottom);
             mRectEndText.set((int) (w - endButtonWidth), (int) mPaddingTop, (int) (w - horizontalPadding), (int) mTextBottom);
             mRectStart.set(0, 0, (int) startButtonWidth, h);
@@ -674,14 +684,24 @@ public class NumericPageIndicator extends View implements PageIndicator {
         }
         
         if (mShowChangePageButtons) {
-            mWidthPreviousText = mPaintText.measureText(mTextPreviousButton);
-            final float previousButtonWidth = mWidthPreviousText + 2 * horizontalPadding;
-            mWidthNextText = mPaintText.measureText(mTextNextButton);
-            final float nextButtonWidth = mWidthNextText + 2 * horizontalPadding;
+            float previousButtonWidth;
+            float nextButtonWidth;
+            if (mShowImagesForPageControls) {
+                previousButtonWidth = mPreviousButtonImage.getWidth();
+                nextButtonWidth = mNextButtonImage.getWidth();
+            } else {
+                mWidthPreviousText = mPaintText.measureText(mTextPreviousButton);
+                previousButtonWidth = mWidthPreviousText;
+                mWidthNextText = mPaintText.measureText(mTextNextButton);
+                nextButtonWidth = mWidthNextText;
+            }
+            previousButtonWidth += (2 * horizontalPadding);
+            nextButtonWidth += (2 * horizontalPadding);
+
             mRectPreviousText.set((int) (horizontalPadding + leftOffset), (int) mPaddingTop, (int) (previousButtonWidth + leftOffset), (int) mTextBottom);
             mRectNextText.set((int) (w - nextButtonWidth - rightOffset), (int) mPaddingTop, (int) (w - horizontalPadding - rightOffset), (int) mTextBottom);
-            mRectPrevious.set((int)leftOffset, 0, (int) (leftOffset + previousButtonWidth), h);
-            mRectNext.set((int) (w - nextButtonWidth - rightOffset), 0, (int)(w - rightOffset), h);
+            mRectPrevious.set((int) leftOffset, 0, (int) (leftOffset + previousButtonWidth), h);
+            mRectNext.set((int) (w - nextButtonWidth - rightOffset), 0, (int) (w - rightOffset), h);
         }
     }
 
